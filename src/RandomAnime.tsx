@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { List } from "./List";
 
 interface Anime {
   id: string;
@@ -11,14 +12,15 @@ interface Character {
   anime: string;
 }
 
+interface RandomAnimeProps {
+  baseUrl: string;
+}
+
 const ANIME_ID_KEY = "randomizerAnimeIds";
 
-export const RandomAnime = () => {
+export const RandomAnime = ({ baseUrl }: RandomAnimeProps) => {
   const [animes, setAnimes] = useState<Anime[]>([]);
-  const [newAnime, setNewAnime] = useState<string>();
-  const [randomCharacter, setRandomCharacter] = useState<Character | null>(
-    null
-  );
+  const [newAnime, setNewAnime] = useState<string>("");
 
   useEffect(() => {
     const storedAnimes = localStorage.getItem(ANIME_ID_KEY);
@@ -28,15 +30,13 @@ export const RandomAnime = () => {
   }, []);
 
   const getAnimeInfo = async (animeId: string) => {
-    const response = await fetch(
-      `https://www.animecharactersdatabase.com/api_series_characters.php?anime_id=${animeId}`,
-      { headers: { "User-Agent": "random-character-script:v0.0.1" } }
-    );
+    const response = await fetch(baseUrl + "api/other/anime/" + animeId);
     const data = await response.json();
     return data;
   };
 
-  const handleAddAnime = async () => {
+  const handleAddAnime = async (e: React.KeyboardEvent) => {
+    if (e.key !== "Enter") return;
     if (!newAnime) return;
 
     const info = await getAnimeInfo(newAnime);
@@ -53,13 +53,7 @@ export const RandomAnime = () => {
     return arr[randomIndex];
   };
 
-  const handleGetRandom = async () => {
-    const randomAnime = randomItem(animes);
-    const char = await getRandomCharacter(randomAnime);
-    setRandomCharacter(char);
-  };
-
-  const getRandomCharacter = async (anime: Anime) => {
+  const getRandomCharacter = async (anime: Anime): Promise<Character> => {
     const info = await getAnimeInfo(anime.id);
     const characters = info.characters;
 
@@ -67,60 +61,35 @@ export const RandomAnime = () => {
     return {
       id: char.id,
       name: char.name,
-      anime: char.anime_name,
+      anime: anime.name,
     };
   };
 
   return (
-    <>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          className="border"
-          value={newAnime}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              handleAddAnime();
-            }
-          }}
-          placeholder="Anime ID"
-          onChange={(e) => setNewAnime(e.target.value)}
-        />
-        <button onClick={() => handleAddAnime()}>Add</button>
-      </div>
+    <div className="flex flex-col gap-4">
+      <h1 className="font-bold">Anime Character</h1>
 
-      <div className="flex flex-col gap-4 items-start">
-        <div className="flex flex-col gap-2">
-          {animes.map((anime) => (
-            <a
-              key={anime.id}
-              target="_blank"
-              href={
-                "https://www.animecharactersdatabase.com/source.php?id=" +
-                anime.id
-              }
-              rel="noreferrer"
-            >
-              {anime.name} ({anime.id})
-            </a>
-          ))}
-        </div>
+      <input
+        type="text"
+        className="border px-2 py-1"
+        value={newAnime}
+        onKeyUp={handleAddAnime}
+        placeholder="Anime ID"
+        onChange={(e) => setNewAnime(e.target.value)}
+      />
 
-        <button onClick={() => handleGetRandom()}>Get Random</button>
-
-        {randomCharacter && (
-          <a
-            href={
-              "https://www.animecharactersdatabase.com/characters.php?id=" +
-              randomCharacter.id
-            }
-            target="_blank"
-            rel="noreferrer"
-          >
-            {randomCharacter.name} from {randomCharacter.anime}
-          </a>
-        )}
-      </div>
-    </>
+      <List
+        items={animes}
+        itemLink={(a) =>
+          "https://www.animecharactersdatabase.com/source.php?id=" + a.id
+        }
+        randomLink={(a) =>
+          "https://www.animecharactersdatabase.com/characters.php?id=" + a.id
+        }
+        format={(a) => `${a.name} (${a.id})`}
+        formatRandom={(a) => `${a.name} from ${a.anime}`}
+        getRandomFor={(a) => getRandomCharacter(a)}
+      />
+    </div>
   );
 };

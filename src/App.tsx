@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { RandomList } from "./RandomList";
+import { RandomAnime } from "./RandomAnime";
 
 const LISTS_ID_KEY = "randomizerListIds";
+
+interface Environment {
+  API_URL: string;
+}
+
+const devEnv: Environment = {
+  API_URL: "http://localhost:5000/",
+};
+
+const prodEnv: Environment = {
+  API_URL: "http://localhost:8080/",
+};
+
+const env = process.env.NODE_ENV === "production" ? prodEnv : devEnv;
 
 function App() {
   const [lists, setLists] = useState<string[]>([]);
@@ -39,9 +54,11 @@ function App() {
 
       <div className="flex gap-4">
         {lists.map((list) => (
-          <RandomList name={list} />
+          <RandomList key={list} name={list} />
         ))}
       </div>
+
+      <RandomAnime baseUrl={env.API_URL} />
     </div>
   );
 }
