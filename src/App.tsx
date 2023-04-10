@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { RandomList } from "./RandomList";
-import { RandomAnime } from "./RandomAnime";
+import { ListHandler, RandomList } from "./RandomList";
+import { animeListHandler } from "./anime";
 
 const LISTS_ID_KEY = "randomizerListIds";
+const ANIME_CHAR_KEY = "Anime Characters";
 
-interface Environment {
-  API_URL: string;
-}
-
-const devEnv: Environment = {
-  API_URL: "http://localhost:5000/",
+const HANDLER: Record<string, ListHandler<any>> = {
+  [ANIME_CHAR_KEY]: animeListHandler,
 };
-
-const prodEnv: Environment = {
-  API_URL: "http://localhost:8080/",
-};
-
-const env = process.env.NODE_ENV === "production" ? prodEnv : devEnv;
 
 function App() {
   const [lists, setLists] = useState<string[]>([]);
@@ -45,6 +36,8 @@ function App() {
     localStorage.setItem(LISTS_ID_KEY, JSON.stringify(updatedList));
   };
 
+  const allLists = [ANIME_CHAR_KEY, ...lists];
+
   return (
     <div className="p-4 flex flex-col gap-4">
       <div className="flex gap-4">
@@ -58,17 +51,18 @@ function App() {
         />
       </div>
 
-      <div className="flex gap-4">
-        {lists.map((list) => (
+      <div className="flex gap-4 flex-wrap">
+        {allLists.map((list) => (
           <RandomList
             key={list}
             name={list}
-            onDelete={() => handleDeleteList(list)}
+            handler={HANDLER[list]}
+            onDelete={
+              ANIME_CHAR_KEY === list ? undefined : () => handleDeleteList(list)
+            }
           />
         ))}
       </div>
-
-      <RandomAnime baseUrl={env.API_URL} />
     </div>
   );
 }

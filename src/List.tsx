@@ -90,7 +90,7 @@ export const List = ({
 
       <div className="flex flex-col gap-2">
         {items.map((x) => (
-          <div className="flex gap-2">
+          <div className="flex gap-2" key={format(x)}>
             <input
               type="checkbox"
               checked={!isDisabled(x)}

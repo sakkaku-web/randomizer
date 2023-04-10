@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
 import { List } from "./List";
 
+export interface ListHandler<T, E = T> {
+  onAddNew: (item: string) => Promise<T | null>;
+  itemLink?: (item: T) => string;
+  randomLink?: (item: T) => string;
+  format?: (item: T) => string;
+  formatRandom?: (item: E) => string;
+  getRandomFor?: (item: T) => Promise<E | null>;
+}
+
 interface RandomListProps {
   name: string;
+  handler?: ListHandler<any>;
   onDelete?: () => void;
 }
 
 const LIST_ID_PREFIX_KEY = "randomizerListIds-";
 
-export const RandomList = ({ name, onDelete }: RandomListProps) => {
-  const [items, setItems] = useState<string[]>([]);
+export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
+  const [items, setItems] = useState<any[]>([]);
   const [newItem, setNewItem] = useState<string>();
 
-  const listKey = LIST_ID_PREFIX_KEY + name;
+  const listKey = LIST_ID_PREFIX_KEY + name.replaceAll(" ", "-");
 
   useEffect(() => {
     const stored = localStorage.getItem(listKey);
@@ -25,7 +35,10 @@ export const RandomList = ({ name, onDelete }: RandomListProps) => {
     if (e.key !== "Enter") return;
     if (!newItem) return;
 
-    setItems([...items, newItem]);
+    const item = handler ? await handler?.onAddNew(newItem) : newItem;
+    if (!item) return;
+
+    setItems([...items, item]);
     setNewItem("");
     localStorage.setItem(listKey, JSON.stringify(items));
   };
@@ -33,7 +46,7 @@ export const RandomList = ({ name, onDelete }: RandomListProps) => {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-bold flex gap-4">
-        {name} <button onClick={onDelete}>x</button>
+        {name} {onDelete && <button onClick={onDelete}>x</button>}
       </h1>
 
       <input
@@ -45,7 +58,14 @@ export const RandomList = ({ name, onDelete }: RandomListProps) => {
         onChange={(e) => setNewItem(e.target.value)}
       />
 
-      <List items={items} />
+      <List
+        items={items}
+        itemLink={handler?.itemLink}
+        randomLink={handler?.randomLink}
+        format={handler?.format}
+        formatRandom={handler?.formatRandom}
+        getRandomFor={handler?.getRandomFor}
+      />
     </div>
   );
 };
