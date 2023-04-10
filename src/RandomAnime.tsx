@@ -42,9 +42,10 @@ export const RandomAnime = () => {
     const info = await getAnimeInfo(newAnime);
     const name = info["anime_name"];
 
-    setAnimes([...animes, { id: newAnime, name }]);
+    const updated = [...animes, { id: newAnime, name }];
+    setAnimes(updated);
     setNewAnime("");
-    localStorage.setItem(ANIME_ID_KEY, JSON.stringify(animes));
+    localStorage.setItem(ANIME_ID_KEY, JSON.stringify(updated));
   };
 
   const randomItem = (arr: any[]) => {
