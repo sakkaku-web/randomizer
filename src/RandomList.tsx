@@ -3,11 +3,12 @@ import { List } from "./List";
 
 interface RandomListProps {
   name: string;
+  onDelete?: () => void;
 }
 
 const LIST_ID_PREFIX_KEY = "randomizerListIds-";
 
-export const RandomList = ({ name }: RandomListProps) => {
+export const RandomList = ({ name, onDelete }: RandomListProps) => {
   const [items, setItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState<string>();
 
@@ -31,7 +32,9 @@ export const RandomList = ({ name }: RandomListProps) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="font-bold">{name}</h1>
+      <h1 className="font-bold flex gap-4">
+        {name} <button onClick={onDelete}>x</button>
+      </h1>
 
       <input
         type="text"

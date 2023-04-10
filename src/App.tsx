@@ -39,11 +39,17 @@ function App() {
     localStorage.setItem(LISTS_ID_KEY, JSON.stringify(updatedList));
   };
 
+  const handleDeleteList = (list: string) => {
+    const updatedList = lists.filter((l) => l !== list);
+    setLists(updatedList);
+    localStorage.setItem(LISTS_ID_KEY, JSON.stringify(updatedList));
+  };
+
   return (
     <div className="p-4 flex flex-col gap-4">
       <div className="flex gap-4">
         <input
-          className="border"
+          className="border px-2 py-1"
           type="text"
           placeholder="New List"
           value={newList}
@@ -54,7 +60,11 @@ function App() {
 
       <div className="flex gap-4">
         {lists.map((list) => (
-          <RandomList key={list} name={list} />
+          <RandomList
+            key={list}
+            name={list}
+            onDelete={() => handleDeleteList(list)}
+          />
         ))}
       </div>
 
