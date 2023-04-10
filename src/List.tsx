@@ -3,11 +3,10 @@ import { useState } from "react";
 interface ListProps {
   items: any[];
   isEqual?: (a: any, b: any) => boolean;
-  itemLink?: (item: any) => string;
-  format?: (item: any) => string;
+  getId?: (item: any) => string;
+  format?: (item: any) => JSX.Element;
   getRandomFor?: (item: any) => Promise<any>;
-  formatRandom?: (item: any) => string;
-  randomLink?: (item: any) => string;
+  formatRandom?: (item: any) => JSX.Element;
 }
 
 export const List = ({
@@ -16,8 +15,7 @@ export const List = ({
   format = (x) => x,
   getRandomFor = async (x) => x,
   formatRandom = (x) => x,
-  itemLink,
-  randomLink,
+  getId = (x) => x,
 }: ListProps) => {
   const [randomItem, setRandomItem] = useState<any | null>(null);
   const [disabled, setDisabled] = useState<any[]>([]);
@@ -52,25 +50,6 @@ export const List = ({
     }
   };
 
-  const itemElem = (x: any) =>
-    (itemLink && (
-      <a key={format(x)} href={itemLink(x)} target="_blank" rel="noreferrer">
-        {format(x)}
-      </a>
-    )) || <span key={x}>{format(x)}</span>;
-
-  const randomItemElem = (x: any) =>
-    (randomLink && (
-      <a
-        key={formatRandom(x)}
-        href={randomLink(x)}
-        target="_blank"
-        rel="noreferrer"
-      >
-        {formatRandom(x)}
-      </a>
-    )) || <span key={x}>{formatRandom(x)}</span>;
-
   return (
     <div className="flex flex-col gap-4 items-start">
       <div className="flex gap-4 items-center">
@@ -85,18 +64,18 @@ export const List = ({
         >
           Random
         </button>
-        {randomItem && randomItemElem(randomItem)}
+        {randomItem && formatRandom(randomItem)}
       </div>
 
       <div className="flex flex-col gap-2">
         {items.map((x) => (
-          <div className="flex gap-2" key={format(x)}>
+          <div className="flex gap-2" key={getId(x)}>
             <input
               type="checkbox"
               checked={!isDisabled(x)}
               onChange={() => toggleDisabled(x)}
             />
-            <span>{itemElem(x)}</span>
+            <span>{format(x)}</span>
           </div>
         ))}
       </div>

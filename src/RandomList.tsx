@@ -3,10 +3,9 @@ import { List } from "./List";
 
 export interface ListHandler<T, E = T> {
   onAddNew: (item: string) => Promise<T | null>;
-  itemLink?: (item: T) => string;
-  randomLink?: (item: T) => string;
-  format?: (item: T) => string;
-  formatRandom?: (item: E) => string;
+  getId?: (item: T) => string;
+  format?: (item: T) => JSX.Element;
+  formatRandom?: (item: E) => JSX.Element;
   getRandomFor?: (item: T) => Promise<E | null>;
 }
 
@@ -38,9 +37,10 @@ export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
     const item = handler ? await handler?.onAddNew(newItem) : newItem;
     if (!item) return;
 
-    setItems([...items, item]);
+    const updated = [...items, item];
+    setItems(updated);
     setNewItem("");
-    localStorage.setItem(listKey, JSON.stringify(items));
+    localStorage.setItem(listKey, JSON.stringify(updated));
   };
 
   return (
@@ -60,8 +60,7 @@ export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
 
       <List
         items={items}
-        itemLink={handler?.itemLink}
-        randomLink={handler?.randomLink}
+        getId={handler?.getId}
         format={handler?.format}
         formatRandom={handler?.formatRandom}
         getRandomFor={handler?.getRandomFor}

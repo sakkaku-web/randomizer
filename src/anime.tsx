@@ -52,11 +52,32 @@ const getNewAnime = async (id: string): Promise<Anime | null> => {
 
 export const animeListHandler: ListHandler<Anime, Character> = {
   onAddNew: (id) => getNewAnime(id),
-  itemLink: (x) =>
-    `https://www.animecharactersdatabase.com/source.php?id=${x.id}`,
-  randomLink: (x) =>
-    `https://www.animecharactersdatabase.com/characters.php?id=${x.id}`,
-  format: (x) => `${x.name} (${x.id})`,
-  formatRandom: (x) => `${x.name} from ${x.anime}`,
+  getId: (x) => x.id,
+  format: (x) => (
+    <>
+      <a
+        className="text-blue-500 hover:underline"
+        href={`https://www.animecharactersdatabase.com/source.php?id=${x.id}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {x.name}
+      </a>{" "}
+      ({x.id})
+    </>
+  ),
+  formatRandom: (x) => (
+    <>
+      <a
+        className="text-blue-500 hover:underline"
+        href={`https://www.animecharactersdatabase.com/characters.php?id=${x.id}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {x.name}
+      </a>
+      from {x.anime}
+    </>
+  ),
   getRandomFor: getRandomCharacter,
 };
