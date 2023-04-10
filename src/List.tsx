@@ -7,6 +7,8 @@ interface ListProps {
   format?: (item: any) => JSX.Element;
   getRandomFor?: (item: any) => Promise<any>;
   formatRandom?: (item: any) => JSX.Element;
+
+  onDelete?: (item: any) => void;
 }
 
 export const List = ({
@@ -16,6 +18,7 @@ export const List = ({
   getRandomFor = async (x) => x,
   formatRandom = (x) => x,
   getId = (x) => x,
+  onDelete,
 }: ListProps) => {
   const [randomItem, setRandomItem] = useState<any | null>(null);
   const [disabled, setDisabled] = useState<any[]>([]);
@@ -76,6 +79,13 @@ export const List = ({
               onChange={() => toggleDisabled(x)}
             />
             <span>{format(x)}</span>
+
+            <button
+              className="font-bold"
+              onClick={() => onDelete && onDelete(x)}
+            >
+              x
+            </button>
           </div>
         ))}
       </div>

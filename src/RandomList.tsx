@@ -43,6 +43,12 @@ export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
     localStorage.setItem(listKey, JSON.stringify(updated));
   };
 
+  const handleDeleteItem = (item: any) => {
+    const updated = items.filter((i) => i !== item);
+    setItems(updated);
+    localStorage.setItem(listKey, JSON.stringify(updated));
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-bold flex gap-4">
@@ -64,6 +70,7 @@ export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
         format={handler?.format}
         formatRandom={handler?.formatRandom}
         getRandomFor={handler?.getRandomFor}
+        onDelete={(item) => handleDeleteItem(item)}
       />
     </div>
   );
