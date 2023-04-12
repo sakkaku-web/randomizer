@@ -3,7 +3,7 @@ import { ListHandler, RandomList } from "./RandomList";
 import { animeListHandler } from "./anime";
 
 const LISTS_ID_KEY = "randomizerListIds";
-const ANIME_CHAR_KEY = "Anime Characters";
+const ANIME_CHAR_KEY = "Anime";
 
 const HANDLER: Record<string, ListHandler<any>> = {
   [ANIME_CHAR_KEY]: animeListHandler,
@@ -36,8 +36,6 @@ function App() {
     localStorage.setItem(LISTS_ID_KEY, JSON.stringify(updatedList));
   };
 
-  const allLists = [ANIME_CHAR_KEY, ...lists];
-
   return (
     <div className="p-4 flex flex-col gap-4">
       <div className="flex gap-4">
@@ -52,14 +50,12 @@ function App() {
       </div>
 
       <div className="flex gap-4 flex-wrap">
-        {allLists.map((list) => (
+        {lists.map((list) => (
           <RandomList
             key={list}
             name={list}
             handler={HANDLER[list]}
-            onDelete={
-              ANIME_CHAR_KEY === list ? undefined : () => handleDeleteList(list)
-            }
+            onDelete={() => handleDeleteList(list)}
           />
         ))}
       </div>

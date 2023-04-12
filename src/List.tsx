@@ -62,7 +62,7 @@ export const List = ({
           onChange={() => toggleAll()}
         />
         <button
-          className="bg-slate-300 px-2 py-1 rounded"
+          className="bg-slate-100 hover:bg-slate-300 px-2 py-1"
           onClick={() => handleGetRandom()}
         >
           Random

@@ -3,5 +3,8 @@
 Everything related to something random
 
 - Create a list of items and get a random one
-- Random Anime Characters: https://www.animecharactersdatabase.com
-  - API needed: https://github.com/sakkaku-web/social-media-manager
+- Predefined Lists
+  - Anime
+    - Random Anime Characters from https://www.animecharactersdatabase.com
+    - Add IDs as item
+    - API needed: https://github.com/sakkaku-web/social-media-manager
