@@ -2,6 +2,8 @@ import { useState } from "react";
 
 interface ListProps {
   items: any[];
+  editable?: boolean;
+
   isEqual?: (a: any, b: any) => boolean;
   getId?: (item: any) => string;
   format?: (item: any) => JSX.Element;
@@ -13,6 +15,7 @@ interface ListProps {
 
 export const List = ({
   items,
+  editable = false,
   isEqual = (a, b) => a === b,
   format = (x) => x,
   getRandomFor = async (x) => x,
@@ -80,12 +83,14 @@ export const List = ({
             />
             <span>{format(x)}</span>
 
-            <button
-              className="font-bold"
-              onClick={() => onDelete && onDelete(x)}
-            >
-              x
-            </button>
+            {editable && (
+              <button
+                className="font-bold"
+                onClick={() => onDelete && onDelete(x)}
+              >
+                x
+              </button>
+            )}
           </div>
         ))}
       </div>

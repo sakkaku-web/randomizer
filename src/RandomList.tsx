@@ -12,13 +12,23 @@ export interface ListHandler<T, E = T> {
 
 interface RandomListProps {
   name: string;
+  editable: boolean;
   handler?: ListHandler<any>;
-  onDelete?: () => void;
+  onDelete: () => void;
+  onMoveLeft: () => void;
+  onMoveRight: () => void;
 }
 
 const LIST_ID_PREFIX_KEY = "randomizerListIds-";
 
-export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
+export const RandomList = ({
+  name,
+  editable,
+  handler,
+  onDelete,
+  onMoveLeft,
+  onMoveRight,
+}: RandomListProps) => {
   const [items, setItems] = useState<any[]>([]);
   const [newItem, setNewItem] = useState<string>("");
 
@@ -71,10 +81,17 @@ export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-bold flex gap-4">
-        {name} {onDelete && <button onClick={onDelete}>x</button>}
+        <span>{name}</span>
         <button onClick={handleCopy} title="copy raw data to clipboard">
           <BiCopy />
         </button>
+        {editable && (
+          <>
+            <button onClick={onDelete}>x</button>
+            <button onClick={onMoveLeft}>&lt;</button>
+            <button onClick={onMoveRight}>&gt;</button>
+          </>
+        )}
       </h1>
 
       <div className="flex items-center gap-2">
@@ -93,6 +110,7 @@ export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
 
       <List
         items={items}
+        editable={editable}
         getId={handler?.getId}
         format={handler?.format}
         formatRandom={handler?.formatRandom}

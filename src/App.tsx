@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ListHandler, RandomList } from "./RandomList";
 import { animeListHandler } from "./anime";
+import { BiEdit } from "react-icons/bi";
 
 const LISTS_ID_KEY = "randomizerListIds";
 const ANIME_CHAR_KEY = "Anime";
@@ -12,6 +13,7 @@ const HANDLER: Record<string, ListHandler<any>> = {
 function App() {
   const [lists, setLists] = useState<string[]>([]);
   const [newList, setNewList] = useState<string>("");
+  const [editable, setEditable] = useState<boolean>(false);
 
   useEffect(() => {
     const storedLists = localStorage.getItem(LISTS_ID_KEY);
@@ -20,20 +22,33 @@ function App() {
     }
   }, []);
 
+  const updateLists = (newLists: string[]) => {
+    setLists(newLists);
+    localStorage.setItem(LISTS_ID_KEY, JSON.stringify(newLists));
+  };
+
   const handleAddList = async (e: React.KeyboardEvent) => {
     if (e.key !== "Enter") return;
     if (!newList) return;
 
-    const updatedList = [...lists, newList];
-    setLists(updatedList);
+    updateLists([...lists, newList]);
     setNewList("");
-    localStorage.setItem(LISTS_ID_KEY, JSON.stringify(updatedList));
   };
 
   const handleDeleteList = (list: string) => {
-    const updatedList = lists.filter((l) => l !== list);
-    setLists(updatedList);
-    localStorage.setItem(LISTS_ID_KEY, JSON.stringify(updatedList));
+    updateLists(lists.filter((l) => l !== list));
+  };
+
+  const handleMoveList = (list: string, direction: "left" | "right") => {
+    const index = lists.indexOf(list);
+    if (index === -1) return;
+    lists.splice(index, 1);
+    if (direction === "left") {
+      lists.splice(index - 1, 0, list);
+    } else {
+      lists.splice(index + 1, 0, list);
+    }
+    updateLists([...lists]);
   };
 
   return (
@@ -47,15 +62,25 @@ function App() {
           onKeyUp={handleAddList}
           onChange={(e) => setNewList(e.target.value)}
         />
+
+        <button
+          onClick={() => setEditable(!editable)}
+          className={"p-2 " + (editable ? "text-red-500" : "")}
+        >
+          <BiEdit />
+        </button>
       </div>
 
       <div className="flex gap-4 flex-wrap">
         {lists.map((list) => (
           <RandomList
             key={list}
+            editable={editable}
             name={list}
             handler={HANDLER[list]}
             onDelete={() => handleDeleteList(list)}
+            onMoveLeft={() => handleMoveList(list, "left")}
+            onMoveRight={() => handleMoveList(list, "right")}
           />
         ))}
       </div>
