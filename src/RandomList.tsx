@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { List } from "./List";
+import { BiCopy, BiPaste } from "react-icons/bi";
 
 export interface ListHandler<T, E = T> {
   onAddNew: (item: string) => Promise<T | null>;
@@ -19,7 +20,7 @@ const LIST_ID_PREFIX_KEY = "randomizerListIds-";
 
 export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
   const [items, setItems] = useState<any[]>([]);
-  const [newItem, setNewItem] = useState<string>();
+  const [newItem, setNewItem] = useState<string>("");
 
   const listKey = LIST_ID_PREFIX_KEY + name.replaceAll(" ", "-");
 
@@ -37,32 +38,58 @@ export const RandomList = ({ name, onDelete, handler }: RandomListProps) => {
     const item = handler ? await handler?.onAddNew(newItem) : newItem;
     if (!item) return;
 
-    const updated = [...items, item];
-    setItems(updated);
+    updateItems([...items, item]);
     setNewItem("");
-    localStorage.setItem(listKey, JSON.stringify(updated));
   };
 
   const handleDeleteItem = (item: any) => {
-    const updated = items.filter((i) => i !== item);
-    setItems(updated);
-    localStorage.setItem(listKey, JSON.stringify(updated));
+    updateItems(items.filter((i) => i !== item));
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(JSON.stringify(items));
+    // alert("Copied to clipboard");
+  };
+
+  const handlePaste = async () => {
+    if (!newItem) return;
+
+    const parsed = JSON.parse(newItem);
+    if (Array.isArray(parsed)) {
+      updateItems(parsed);
+      setNewItem("");
+    } else {
+      alert("Invalid clipboard data");
+    }
+  };
+
+  const updateItems = (newItems: any[]) => {
+    setItems(newItems);
+    localStorage.setItem(listKey, JSON.stringify(newItems));
   };
 
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-bold flex gap-4">
         {name} {onDelete && <button onClick={onDelete}>x</button>}
+        <button onClick={handleCopy} title="copy raw data to clipboard">
+          <BiCopy />
+        </button>
       </h1>
 
-      <input
-        type="text"
-        className="border px-2 py-1"
-        value={newItem}
-        onKeyUp={handleAddItem}
-        placeholder="Item"
-        onChange={(e) => setNewItem(e.target.value)}
-      />
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          className="border px-2 py-1"
+          value={newItem}
+          onKeyUp={handleAddItem}
+          placeholder="Item"
+          onChange={(e) => setNewItem(e.target.value)}
+        />
+        <button onClick={handlePaste} title="parse as raw data">
+          <BiPaste />
+        </button>
+      </div>
 
       <List
         items={items}
