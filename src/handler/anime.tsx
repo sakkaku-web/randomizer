@@ -1,5 +1,6 @@
-import { ListHandler } from "./RandomList";
-import { env } from "./env";
+import { ListHandler } from '../RandomList';
+import { env } from '../env';
+import { getRandomItem } from '../random';
 
 interface Anime {
   id: string;
@@ -13,7 +14,7 @@ interface Character {
 }
 
 const getAnimeInfo = async (animeId: string) => {
-  const response = await fetch(env.API_URL + "api/other/anime/" + animeId);
+  const response = await fetch(env.API_URL + 'api/other/anime/' + animeId);
   const data = await response.json();
   return data;
 };
@@ -23,7 +24,10 @@ const randomItem = (arr: any[]) => {
   return arr[randomIndex];
 };
 
-const getRandomCharacter = async (anime: Anime): Promise<Character | null> => {
+const getRandomCharacter = async (
+  animes: Anime[]
+): Promise<Character | null> => {
+  const anime = getRandomItem(animes);
   try {
     const info = await getAnimeInfo(anime.id);
     const characters = info.characters;
@@ -35,7 +39,7 @@ const getRandomCharacter = async (anime: Anime): Promise<Character | null> => {
       anime: anime.name,
     };
   } catch (e) {
-    console.error("Failed to get random anime character", e);
+    console.error('Failed to get random anime character', e);
     return null;
   }
 };
@@ -45,7 +49,7 @@ const getNewAnime = async (id: string): Promise<Anime | null> => {
     const info = await getAnimeInfo(id);
     return { id, name: info.name };
   } catch (e) {
-    console.error("Failed to get anime info", e);
+    console.error('Failed to get anime info', e);
     return null;
   }
 };
@@ -62,7 +66,7 @@ export const animeListHandler: ListHandler<Anime, Character> = {
         rel="noreferrer"
       >
         {x.name}
-      </a>{" "}
+      </a>{' '}
       ({x.id})
     </>
   ),

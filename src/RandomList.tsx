@@ -3,11 +3,11 @@ import { List } from "./List";
 import { BiCopy, BiPaste } from "react-icons/bi";
 
 export interface ListHandler<T, E = T> {
-  onAddNew: (item: string) => Promise<T | null>;
+  onAddNew?: (item: string) => Promise<T | null>;
   getId?: (item: T) => string;
   format?: (item: T) => JSX.Element;
   formatRandom?: (item: E) => JSX.Element;
-  getRandomFor?: (item: T) => Promise<E | null>;
+  getRandomFor?: (item: T[]) => Promise<E | null>;
 }
 
 interface RandomListProps {
@@ -45,7 +45,8 @@ export const RandomList = ({
     if (e.key !== "Enter") return;
     if (!newItem) return;
 
-    const item = handler ? await handler?.onAddNew(newItem) : newItem;
+    const item =
+      handler && handler.onAddNew ? await handler.onAddNew(newItem) : newItem;
     if (!item) return;
 
     updateItems([...items, item]);

@@ -8,3 +8,5 @@ Everything related to something random
     - Random Anime Characters from https://www.animecharactersdatabase.com
     - Add IDs as item
     - API needed: https://github.com/sakkaku-web/social-media-manager
+  - Grouper
+    - Group items in pairs

@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { ListHandler, RandomList } from "./RandomList";
-import { animeListHandler } from "./anime";
-import { BiEdit } from "react-icons/bi";
+import React, { useEffect, useState } from 'react';
+import { ListHandler, RandomList } from './RandomList';
+import { animeListHandler } from './handler/anime';
+import { BiEdit } from 'react-icons/bi';
+import { grouperListHandler } from './handler/grouper';
 
-const LISTS_ID_KEY = "randomizerListIds";
-const ANIME_CHAR_KEY = "Anime";
+const LISTS_ID_KEY = 'randomizerListIds';
+const ANIME_CHAR_KEY = 'Anime';
+const GROUPER_KEY = 'Grouper';
 
 const HANDLER: Record<string, ListHandler<any>> = {
   [ANIME_CHAR_KEY]: animeListHandler,
+  [GROUPER_KEY]: grouperListHandler,
 };
 
 function App() {
   const [lists, setLists] = useState<string[]>([]);
-  const [newList, setNewList] = useState<string>("");
+  const [newList, setNewList] = useState<string>('');
   const [editable, setEditable] = useState<boolean>(false);
 
   useEffect(() => {
@@ -28,22 +31,22 @@ function App() {
   };
 
   const handleAddList = async (e: React.KeyboardEvent) => {
-    if (e.key !== "Enter") return;
+    if (e.key !== 'Enter') return;
     if (!newList) return;
 
     updateLists([...lists, newList]);
-    setNewList("");
+    setNewList('');
   };
 
   const handleDeleteList = (list: string) => {
     updateLists(lists.filter((l) => l !== list));
   };
 
-  const handleMoveList = (list: string, direction: "left" | "right") => {
+  const handleMoveList = (list: string, direction: 'left' | 'right') => {
     const index = lists.indexOf(list);
     if (index === -1) return;
     lists.splice(index, 1);
-    if (direction === "left") {
+    if (direction === 'left') {
       lists.splice(index - 1, 0, list);
     } else {
       lists.splice(index + 1, 0, list);
@@ -65,7 +68,7 @@ function App() {
 
         <button
           onClick={() => setEditable(!editable)}
-          className={"p-2 " + (editable ? "text-red-500" : "")}
+          className={'p-2 ' + (editable ? 'text-red-500' : '')}
         >
           <BiEdit />
         </button>
@@ -79,8 +82,8 @@ function App() {
             name={list}
             handler={HANDLER[list]}
             onDelete={() => handleDeleteList(list)}
-            onMoveLeft={() => handleMoveList(list, "left")}
-            onMoveRight={() => handleMoveList(list, "right")}
+            onMoveLeft={() => handleMoveList(list, 'left')}
+            onMoveRight={() => handleMoveList(list, 'right')}
           />
         ))}
       </div>

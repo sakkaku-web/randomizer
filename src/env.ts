@@ -7,7 +7,7 @@ const devEnv: Environment = {
 };
 
 const prodEnv: Environment = {
-  API_URL: "http://localhost:8080/",
+  API_URL: "http://localhost:8888/",
 };
 
 export const env = process.env.NODE_ENV === "production" ? prodEnv : devEnv;

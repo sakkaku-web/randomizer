@@ -26,15 +26,9 @@ export const List = ({
   const [randomItem, setRandomItem] = useState<any | null>(null);
   const [disabled, setDisabled] = useState<any[]>([]);
 
-  const getRandomItem = (arr: any[]) => {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-  };
-
   const handleGetRandom = async () => {
     const enabledItems = items.filter((x) => !isDisabled(x));
-    const item = getRandomItem(enabledItems);
-    setRandomItem(await getRandomFor(item));
+    setRandomItem(await getRandomFor(enabledItems));
   };
 
   const isDisabled = (item: any) =>
