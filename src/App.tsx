@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ListHandler, RandomList } from './RandomList';
 import { animeListHandler } from './handler/anime';
-import { BiEdit } from 'react-icons/bi';
+import { BiEdit, BiInfoCircle } from 'react-icons/bi';
 import { grouperListHandler } from './handler/grouper';
 
 const LISTS_ID_KEY = 'randomizerListIds';
@@ -56,7 +56,7 @@ function App() {
 
   return (
     <div className="p-4 flex flex-col gap-4">
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <input
           className="border px-2 py-1"
           type="text"
@@ -72,6 +72,8 @@ function App() {
         >
           <BiEdit />
         </button>
+
+        <BiInfoCircle title="Predefined lists&#013;&#013; Anime - random anime character, using anime ids from animecharactersdatabase.com&#013;&#013; Grouper - group items in pairs" />
       </div>
 
       <div className="flex gap-4 flex-wrap">
