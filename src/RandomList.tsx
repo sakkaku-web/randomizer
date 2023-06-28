@@ -79,6 +79,11 @@ export const RandomList = ({
     localStorage.setItem(listKey, JSON.stringify(newItems));
   };
 
+  const deleteList = () => {
+    localStorage.removeItem(listKey);
+    onDelete();
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-bold flex gap-4">
@@ -88,7 +93,7 @@ export const RandomList = ({
         </button>
         {editable && (
           <>
-            <button onClick={onDelete}>x</button>
+            <button onClick={deleteList}>x</button>
             <button onClick={onMoveLeft}>&lt;</button>
             <button onClick={onMoveRight}>&gt;</button>
           </>
