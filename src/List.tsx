@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { getRandomItem } from './random';
 
 interface ListProps {
   items: any[];
@@ -18,7 +19,7 @@ export const List = ({
   editable = false,
   isEqual = (a, b) => a === b,
   format = (x) => x,
-  getRandomFor = async (x) => x,
+  getRandomFor = async (x) => getRandomItem(x),
   formatRandom = (x) => x,
   getId = (x) => x,
   onDelete,
