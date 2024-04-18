@@ -3,6 +3,7 @@ import { ListHandler, RandomList } from './RandomList';
 import { animeListHandler } from './handler/anime';
 import { BiEdit, BiInfoCircle } from 'react-icons/bi';
 import { grouperListHandler } from './handler/grouper';
+import { Revenue } from './Revenue';
 
 const LISTS_ID_KEY = 'randomizerListIds';
 const ANIME_CHAR_KEY = 'Anime';
@@ -54,43 +55,45 @@ function App() {
     updateLists([...lists]);
   };
 
-  return (
-    <div className="p-4 flex flex-col gap-4">
-      <div className="flex gap-4 items-center">
-        <input
-          className="border px-2 py-1"
-          type="text"
-          placeholder="New List"
-          value={newList}
-          onKeyUp={handleAddList}
-          onChange={(e) => setNewList(e.target.value)}
-        />
+  return <Revenue />;
 
-        <button
-          onClick={() => setEditable(!editable)}
-          className={'p-2 ' + (editable ? 'text-red-500' : '')}
-        >
-          <BiEdit />
-        </button>
+  // return (
+  //   <div className="p-4 flex flex-col gap-4">
+  //     <div className="flex gap-4 items-center">
+  //       <input
+  //         className="border px-2 py-1"
+  //         type="text"
+  //         placeholder="New List"
+  //         value={newList}
+  //         onKeyUp={handleAddList}
+  //         onChange={(e) => setNewList(e.target.value)}
+  //       />
 
-        <BiInfoCircle title="Predefined lists&#013;&#013; Anime - random anime character, using anime ids from animecharactersdatabase.com&#013;&#013; Grouper - group items in pairs" />
-      </div>
+  //       <button
+  //         onClick={() => setEditable(!editable)}
+  //         className={'p-2 ' + (editable ? 'text-red-500' : '')}
+  //       >
+  //         <BiEdit />
+  //       </button>
 
-      <div className="flex gap-4 flex-wrap">
-        {lists.map((list) => (
-          <RandomList
-            key={list}
-            editable={editable}
-            name={list}
-            handler={HANDLER[list]}
-            onDelete={() => handleDeleteList(list)}
-            onMoveLeft={() => handleMoveList(list, 'left')}
-            onMoveRight={() => handleMoveList(list, 'right')}
-          />
-        ))}
-      </div>
-    </div>
-  );
+  //       <BiInfoCircle title="Predefined lists&#013;&#013; Anime - random anime character, using anime ids from animecharactersdatabase.com&#013;&#013; Grouper - group items in pairs" />
+  //     </div>
+
+  //     <div className="flex gap-4 flex-wrap">
+  //       {lists.map((list) => (
+  //         <RandomList
+  //           key={list}
+  //           editable={editable}
+  //           name={list}
+  //           handler={HANDLER[list]}
+  //           onDelete={() => handleDeleteList(list)}
+  //           onMoveLeft={() => handleMoveList(list, 'left')}
+  //           onMoveRight={() => handleMoveList(list, 'right')}
+  //         />
+  //       ))}
+  //     </div>
+  //   </div>
+  // );
 }
 
 export default App;
